@@ -1,0 +1,14 @@
+.env
+aws.env
+data/
+.vscode/
+__pycache__
+.terraform
+terraform.log
+terraform.tfstate
+terraform.tfstate.*
+backend_config.tf
+*.tfplan.*
+*.tfplan
+notes.md
+*.dot
