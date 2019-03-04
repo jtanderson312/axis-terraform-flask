@@ -1,0 +1,22 @@
+[
+    {
+      "name": "worker",
+      "image": "${repository_url}:latest",
+      "environment": [
+        {"name": "CELERY_BROKER_URL",
+         "value": "redis://${redis_hostname}:${redis_port}/0"},
+        {"name": "CELERY_RESULT_BACKEND",
+         "value": "redis://${redis_hostname}:${redis_port}/0"}
+      ],
+      "networkMode": "awsvpc",
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "${log_group}",
+          "awslogs-region": "${log_region}",
+          "awslogs-stream-prefix": "workerÎ"
+        }
+      }
+    }
+  ]
+  
