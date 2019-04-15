@@ -12,6 +12,8 @@ locals {
   worker_count         = 1
   worker_autoscale_min = 1
   worker_autoscale_max = 3
+  volume_share_name    = "shared_data"
+  volume_share_path    = "/data"
 }
 
 data "aws_iam_role" "ecs_task" {
@@ -62,6 +64,16 @@ resource "aws_ecs_task_definition" "api" {
   memory                   = "${local.api_mem}"
   execution_role_arn       = "${data.aws_iam_role.ecs_task.arn}"
   task_role_arn            = "${data.aws_iam_role.ecs_task.arn}"
+
+  volume {
+    name      = "${local.volume_share_name}"
+    host_path = "${local.volume_share_path}"
+
+    docker_volume_configuration {
+      scope         = "shared"
+      autoprovision = true
+    }
+  }
 }
 
 resource "aws_ecs_service" "api" {
@@ -218,6 +230,16 @@ resource "aws_ecs_task_definition" "worker" {
   memory                   = "${local.worker_mem}"
   execution_role_arn       = "${data.aws_iam_role.ecs_task.arn}"
   task_role_arn            = "${data.aws_iam_role.ecs_task.arn}"
+
+  volume {
+    name      = "${local.volume_share_name}"
+    host_path = "${local.volume_share_path}"
+
+    docker_volume_configuration {
+      scope         = "shared"
+      autoprovision = true
+    }
+  }
 }
 
 resource "aws_ecs_service" "worker" {
