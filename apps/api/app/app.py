@@ -3,10 +3,10 @@ from flask import Flask, render_template, session, request
 from flask import url_for
 
 from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect
-from worker import celery
 from celery.result import AsyncResult
 import celery.states as states
 
+from app.worker import celery
 
 app = Flask(__name__)
 socketio = SocketIO(app, message_queue= os.environ.get('CELERY_BROKER_URL', 'redis://redis:6379/0'))
