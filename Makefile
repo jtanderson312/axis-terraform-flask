@@ -19,7 +19,7 @@ rm:
 	@docker-compose -f docker-compose.local.yml  rm
 
 shell: 
-	docker-compose -f docker-compose.local.yml exec app /bin/sh
+	docker-compose -f docker-compose.local.yml exec web /bin/sh
 
 status:
 	@docker-compose -f docker-compose.local.yml ps
