@@ -4,7 +4,8 @@ FROM node:alpine
 # set working directory
 WORKDIR /usr/src/app
 
-RUN apk add --no-cache --virtual .gyp python make g++
+RUN apk update && apk upgrade 
+#RUN apk add --no-cache --virtual .gyp python make g++
 
 # add `/usr/src/app/node_modules/.bin` to $PATH
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
@@ -16,3 +17,4 @@ COPY yarn.lock  /usr/src/app/yarn.lock
 RUN yarn
 
 CMD ["yarn", "start"]
+#CMD [ "tail" , "-f", "/dev/null"]
