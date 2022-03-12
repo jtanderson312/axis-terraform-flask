@@ -12,6 +12,7 @@ Boilerplate for a project using React frontend with a Terraform controlled backe
 * [Terraform](https://www.terraform.io/) - Cloud infrastructure 
 * [direnv](https://direnv.net/) - Environment variable management
 * [jq](https://stedolan.github.io/jq/) - JSON cli processor
+* [awscli](https://docs.aws.amazon.com/cli/latest/userguide/install-macos.html) - AWS CLI tool (brew install awscli)
 
 # AWS Terraform Creation
 
@@ -51,14 +52,14 @@ $ make plan apply
 # Site Deploy
 Deploy the backend containers to the ECR and update the two services.  NOTE: Run from the root directory of the project
 ```bash
-$ dist-backend-build
-$ dist-backend-deploy
+$ make dist-backend-build
+$ make dist-backend-deploy
 ```
 
 Deploy the frontend react app to a serverless cloudfront distribution
 ```
-$ dist-frontend-build
-$ dist-frontend-deploy
+$ make dist-frontend-build
+$ make dist-frontend-deploy
 ```
 Get coffee...
 
