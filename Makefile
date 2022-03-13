@@ -37,6 +37,14 @@ logs:
 logs.api:
 	@docker-compose -f docker-compose.local.yml logs --tail=100 -f api
 
+logs.worker:
+	@docker-compose -f docker-compose.local.yml logs --tail=100 -f worker
+
+update.locks:
+	@docker-compose -f docker-compose.local.yml cp api:/app/Pipfile.lock ./apps/api
+	@docker-compose -f docker-compose.local.yml cp worker:/queue/Pipfile.lock ./apps/worker
+	@docker-compose -f docker-compose.local.yml cp web:/usr/src/app/yarn.lock ./apps/web
+	
 clean:
 	@docker container prune -f
 	@docker image prune -f
