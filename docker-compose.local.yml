@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 
 services:
   web:
@@ -10,92 +10,90 @@ services:
       - ./apps/web:/usr/src/app
       - /usr/src/app/node_modules
     ports:
-      - '3000:3000'
+      - 3000:3000
     environment:
       - NODE_ENV=development
-      - REACT_APP_API_URL=http://api:5000 
+      - REACT_APP_API_URL=http://api:8100
     depends_on:
       - api
     networks:
       - backend
-    #command: tail -f /dev/null      
+    #command: tail -f /dev/null
 
-      
   api:
-      image: axis-flask/api
-      environment:
-          #CELERY_BROKER_URL: "amqp://admin:mypass@rabbitmq:5672"
-          CELERY_BROKER_URL: "redis://redis:6379"
-          CELERY_RESULT_BACKEND: "redis://redis"
-      volumes:
-              - ./apps/api:/opt/server/
-      depends_on:
-          - redis
-          #- rabbitmq
-      ports:
-          - 5000:5000
-      build:
-          context: ./apps/api
-          dockerfile: Dockerfile
-      networks:
-          - backend
+    image: axis-flask/api
+    environment:
+      #CELERY_BROKER_URL: "amqp://admin:mypass@rabbitmq:5672"
+      CELERY_BROKER_URL: "redis://redis:6379"
+      CELERY_RESULT_BACKEND: "redis://redis"
+    #    volumes:
+    #      - ./apps/api:/opt/server/
+    depends_on:
+      - redis
+      #- rabbitmq
+    ports:
+      - 8100:8100
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    networks:
+      - backend
 
   worker:
-      image: axis-flask/worker
-      environment:
-          #CELERY_BROKER_URL: "amqp://admin:mypass@rabbitmq:5672"
-          CELERY_BROKER_URL: "redis://redis:6379"
-          CELERY_RESULT_BACKEND: "redis://redis"        
-      depends_on:
-          - redis
-          #- rabbitmq
-      build:
-          context: ./apps/worker
-          dockerfile: Dockerfile
-      networks:
-          - backend
+    image: axis-flask/worker
+    environment:
+      #CELERY_BROKER_URL: "amqp://admin:mypass@rabbitmq:5672"
+      CELERY_BROKER_URL: "redis://redis:6379"
+      CELERY_RESULT_BACKEND: "redis://redis"
+    depends_on:
+      - redis
+      #- rabbitmq
+    build:
+      context: ./apps/worker
+      dockerfile: Dockerfile
+    networks:
+      - backend
 
   redis:
-      image: redis:alpine
-      restart: always
-      volumes:
-          - ./data/redis:/data
-      networks:
-          - backend
+    image: redis:alpine
+    restart: always
+    volumes:
+      - ./data/redis:/data
+    networks:
+      - backend
 
-#   rabbitmq:
-#       image: rabbitmq:3.6-management-alpine
-#       restart: always
-#       environment:
-#           - RABBITMQ_DEFAULT_USER=admin
-#           - RABBITMQ_DEFAULT_PASS=mypass        
-#       ports:
-#           - 5672:5672
-#           - 15672:15672
-#       networks:
-#           - backend            
+  #   rabbitmq:
+  #       image: rabbitmq:3.6-management-alpine
+  #       restart: always
+  #       environment:
+  #           - RABBITMQ_DEFAULT_USER=admin
+  #           - RABBITMQ_DEFAULT_PASS=mypass
+  #       ports:
+  #           - 5672:5672
+  #           - 15672:15672
+  #       networks:
+  #           - backend
 
   flower:
-      image: mher/flower
-      environment:
-        #   CELERY_BROKER_URL: 'amqp://admin:mypass@rabbitmq:5672//'
-        #   FLOWER_BROKER: amqp://admin:mypass@rabbitmq:5672//
-        #   FLOWER_BROKER_API: http://admin:mypass@rabbitmq:15672/api/
-          CELERY_BROKER_URL: "redis://redis:6379"
-          FLOWER_BROKER: redis://redis:6379/0 
-          FLOWER_BROKER_API: redis://redis:6379/0     
-      depends_on:
-          - redis
-          #- rabbitmq
-      ports:
-          - 5555:5555
-      networks:
-          - backend
-        
+    image: mher/flower
+    environment:
+      #   CELERY_BROKER_URL: 'amqp://admin:mypass@rabbitmq:5672//'
+      #   FLOWER_BROKER: amqp://admin:mypass@rabbitmq:5672//
+      #   FLOWER_BROKER_API: http://admin:mypass@rabbitmq:15672/api/
+      CELERY_BROKER_URL: "redis://redis:6379"
+      FLOWER_BROKER: redis://redis:6379/0
+      FLOWER_BROKER_API: redis://redis:6379/0
+    depends_on:
+      - redis
+      #- rabbitmq
+    ports:
+      - 5555:5555
+    networks:
+      - backend
+
 networks:
   backend:
     driver: bridge
 
 volumes:
   data_volume:
-

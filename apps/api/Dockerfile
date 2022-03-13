@@ -1,51 +1,20 @@
-FROM  python:3.6-alpine as build-python
+FROM python:3.6-alpine
 
-WORKDIR /app
-
-# install packages
-RUN apk update && \
-    apk add --no-cache \
-    openssl-dev python3-dev build-base linux-headers pcre-dev libressl git && \
-    pip install --upgrade pip && \
-    pip install pipenv 
-
-# pipenv install packages
-COPY Pipfile Pipfile
-COPY Pipfile.lock Pipfile.lock
-
-RUN pipenv install --system --deploy --ignore-pipfile
-
-# ---[ Final Image ]-----------------------------------------------------------
-
-FROM  python:3.6-alpine
-
-ENV APP_ROOT="/opt/server/"
-
-EXPOSE 5000
-
-WORKDIR $APP_ROOT
+RUN apk add build-base linux-headers
+RUN pip install pipenv
 
 # www-data user create
 RUN set -x ; \
   addgroup -g 82 -S www-data ; \
   adduser -u 82 -D -S -G www-data www-data && exit 0 ; exit 1
 
-# install packages
-RUN apk add --no-cache \
-    pcre openssl
+COPY . /app
 
-COPY ./uwsgi.ini /etc/uwsgi/
-RUN mkdir -p /var/log/uwsgi 
+WORKDIR /app
 
-COPY --from=build-python /usr/local/lib/python3.6/site-packages/ /usr/local/lib/python3.6/site-packages/
-COPY --from=build-python /usr/local/bin/ /usr/local/bin/
+# .venv install to /app
+ENV PIPENV_VENV_IN_PROJECT true
 
-USER www-data
+RUN pipenv install
 
-#COPY --chown=www-data ./apps/app/ ${APP_ROOT}
-COPY . ${APP_ROOT}
-
-# Docker Container Keep Alive
-#CMD tail -f /dev/null
-CMD ["uwsgi", "--ini", "/etc/uwsgi/uwsgi.ini"]
-
+CMD [ "pipenv", "run", "uwsgi", "--ini", "uwsgi.ini"]

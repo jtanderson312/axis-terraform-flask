@@ -49,6 +49,6 @@ variable "certificate_arn" {
 
 variable "container_port" {
   type = "string"
-  default = "5000"
+  default = "8100"
   description = "Container port"
 }

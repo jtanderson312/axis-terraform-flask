@@ -1,22 +1,22 @@
-version: '3.7'
+version: "3.7"
 
 services:
   api:
-      image: axis-flask/api-prod
-      environment:
-          CELERY_BROKER_URL: "redis://redis"
-          CELERY_RESULT_BACKEND: "redis://redis"
-      ports:
-          - 5000:5000
-      build:
-          context: ./apps/api
-          dockerfile: Dockerfile
+    image: axis-flask/api-prod
+    environment:
+      CELERY_BROKER_URL: "redis://redis"
+      CELERY_RESULT_BACKEND: "redis://redis"
+    ports:
+      - 8100:8100
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile.prod
 
   worker:
-      image: axis-flask/worker-prod
-      environment:
-          CELERY_BROKER_URL: "redis://redis"
-          CELERY_RESULT_BACKEND: "redis://redis"        
-      build:
-          context: ./apps/worker
-          dockerfile: Dockerfile
+    image: axis-flask/worker-prod
+    environment:
+      CELERY_BROKER_URL: "redis://redis"
+      CELERY_RESULT_BACKEND: "redis://redis"
+    build:
+      context: ./apps/worker
+      dockerfile: Dockerfile.prod
