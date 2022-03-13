@@ -18,8 +18,14 @@ build: down
 rm:
 	@docker-compose -f docker-compose.local.yml  rm
 
-shell: 
+shell.web: 
 	docker-compose -f docker-compose.local.yml exec web /bin/sh
+
+shell.worker: 
+	docker-compose -f docker-compose.local.yml exec worker /bin/sh
+
+shell.api:
+	docker-compose -f docker-compose.local.yml exec  --user root api /bin/sh
 
 status:
 	@docker-compose -f docker-compose.local.yml ps
@@ -27,6 +33,9 @@ status:
 logs:
 	@docker-compose -f docker-compose.local.yml logs --tail=100 -f
 	# @docker-compose logs --tail=100 -f api
+
+logs.api:
+	@docker-compose -f docker-compose.local.yml logs --tail=100 -f api
 
 clean:
 	@docker container prune -f
